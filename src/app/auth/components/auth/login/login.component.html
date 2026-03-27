@@ -1,0 +1,58 @@
+<div class="auth-page">
+  <div class="auth-container animate-fadeInUp">
+    <div class="auth-card card-glass">
+      <div class="auth-header">
+        <div class="auth-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <h2>Welcome Back</h2>
+        <p class="text-muted">Sign in to your healthcare portal</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        <span>⚠</span> {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            formControlName="email"
+            placeholder="name@example.com"
+          />
+          <div class="error-text" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            formControlName="password"
+            placeholder="Enter your password"
+          />
+          <div class="error-text" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            Password must be at least 3 characters
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-full" [disabled]="loginForm.invalid || loading">
+          <span *ngIf="!loading">Sign In</span>
+          <span *ngIf="loading" class="spinner"></span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Don't have an account? <a routerLink="/auth/register">Create Account</a></p>
+      </div>
+    </div>
+  </div>
+</div>

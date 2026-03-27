@@ -1,0 +1,125 @@
+<div class="page-container">
+  <div class="dashboard" *ngIf="!loading">
+    <!-- Welcome Section -->
+    <div class="welcome-section animate-fadeInUp">
+      <div class="welcome-card">
+        <div class="welcome-content">
+          <h1>{{ getGreeting() }}, {{ patient?.firstName || 'Patient' }} 👋</h1>
+          <p class="text-muted">Welcome to your healthcare dashboard. Here's an overview of your health journey.</p>
+        </div>
+        <div class="welcome-graphic">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions animate-fadeInUp" style="animation-delay: 0.1s">
+      <h3 class="section-title">Quick Actions</h3>
+      <div class="action-grid">
+        <div class="action-card" routerLink="/appointments/book">
+          <div class="action-icon book-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <h4>Book Appointment</h4>
+          <p>Schedule a visit with our doctors</p>
+        </div>
+
+        <div class="action-card" routerLink="/doctors">
+          <div class="action-icon doc-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <h4>Our Doctors</h4>
+          <p>Browse our specialist physicians</p>
+        </div>
+
+        <div class="action-card" routerLink="/appointments/my">
+          <div class="action-icon appt-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <h4>My Appointments</h4>
+          <p>View your scheduled visits</p>
+        </div>
+
+        <div class="action-card" routerLink="/profile">
+          <div class="action-icon profile-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h4>My Profile</h4>
+          <p>View and update your info</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Info + Appointments Row -->
+    <div class="info-row animate-fadeInUp" style="animation-delay: 0.2s">
+      <!-- Patient Info Card -->
+      <div class="card info-card" *ngIf="patient">
+        <h3 class="section-title">Your Health Card</h3>
+        <div class="health-info">
+          <div class="info-item">
+            <span class="info-label">Blood Group</span>
+            <span class="info-value badge badge-danger">{{ patient.bloodGroup || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Age</span>
+            <span class="info-value">{{ patient.age }} years</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Gender</span>
+            <span class="info-value">{{ patient.gender }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Allergies</span>
+            <span class="info-value">{{ patient.allergies || 'None reported' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Emergency</span>
+            <span class="info-value">{{ patient.emergencyContactName || 'Not set' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Appointments -->
+      <div class="card appt-card">
+        <h3 class="section-title">Upcoming Appointments</h3>
+        <div *ngIf="upcomingAppointments.length === 0" class="empty-state">
+          <p class="text-muted">No upcoming appointments</p>
+          <button class="btn btn-primary btn-sm" routerLink="/appointments/book">Book Now</button>
+        </div>
+        <div class="appt-list">
+          <div class="appt-item" *ngFor="let appt of upcomingAppointments">
+            <div class="appt-date-badge">
+              <span class="appt-day">{{ appt.appointmentDate }}</span>
+            </div>
+            <div class="appt-details">
+              <h4>Dr. {{ appt.doctorName }}</h4>
+              <p class="text-muted">{{ appt.departmentName }} · {{ appt.appointmentTime }}</p>
+            </div>
+            <span class="badge" [ngClass]="{
+              'badge-success': appt.status === 'SCHEDULED',
+              'badge-warning': appt.status === 'PENDING',
+              'badge-info': appt.status === 'COMPLETED'
+            }">{{ appt.status }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner-large"></div>
+    <p class="text-muted mt-2">Loading your dashboard...</p>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<div class="page-container">
+  <div class="book-page animate-fadeInUp">
+    <div class="page-header">
+      <h1>Book Appointment</h1>
+      <p class="text-muted">Schedule a visit with one of our specialist doctors</p>
+    </div>
+
+    <div class="booking-card card">
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        <span>⚠</span> {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage" class="alert alert-success">
+        <span>✓</span> {{ successMessage }}
+      </div>
+
+      <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="departmentId">Department *</label>
+            <select id="departmentId" class="form-control" formControlName="departmentId" (change)="onDepartmentChange()">
+              <option value="">Select Department</option>
+              <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="doctorId">Doctor *</label>
+            <select id="doctorId" class="form-control" formControlName="doctorId">
+              <option value="">Select Doctor</option>
+              <option *ngFor="let doc of filteredDoctors" [value]="doc.id">
+                Dr. {{ doc.firstName }} {{ doc.lastName }} — {{ doc.specialization }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="appointmentDate">Date *</label>
+            <input type="date" id="appointmentDate" class="form-control" formControlName="appointmentDate" [min]="todayDate" />
+          </div>
+          <div class="form-group">
+            <label for="appointmentTime">Time *</label>
+            <input type="time" id="appointmentTime" class="form-control" formControlName="appointmentTime" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reason">Reason for Visit *</label>
+          <input type="text" id="reason" class="form-control" formControlName="reason" placeholder="e.g., Regular checkup, Follow-up" />
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Additional Notes</label>
+          <textarea id="notes" class="form-control" formControlName="notes" rows="3" placeholder="Any additional information for the doctor..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" routerLink="/dashboard">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="appointmentForm.invalid || loading">
+            <span *ngIf="!loading">Confirm Booking</span>
+            <span *ngIf="loading" class="spinner"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

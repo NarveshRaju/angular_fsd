@@ -1,0 +1,229 @@
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Welcome Section */
+.welcome-card {
+  background: linear-gradient(135deg, var(--primary) 0%, #0e7490 100%);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(13, 148, 136, 0.3);
+}
+
+.welcome-content h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-content p {
+  color: rgba(255,255,255,0.8);
+  font-size: 1rem;
+}
+
+.welcome-graphic {
+  opacity: 0.3;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--slate-800);
+  margin-bottom: 1rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+  margin-top: 2rem;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.action-card {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-200);
+}
+
+.action-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.book-icon { background: rgba(13, 148, 136, 0.1); color: var(--primary); }
+.doc-icon { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+.appt-icon { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.profile-icon { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+.action-card h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--slate-800);
+}
+
+.action-card p {
+  font-size: 0.8rem;
+  color: var(--slate-400);
+}
+
+/* Info Row */
+.info-row {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.5rem;
+}
+
+.info-card, .appt-card {
+  padding: 1.5rem;
+}
+
+.health-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: var(--slate-500);
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+/* Appointments List */
+.appt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.appt-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background: var(--slate-50);
+  transition: background 0.2s;
+}
+
+.appt-item:hover {
+  background: var(--primary-50);
+}
+
+.appt-date-badge {
+  background: var(--primary);
+  color: #fff;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius);
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 80px;
+}
+
+.appt-details h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+.appt-details p {
+  font-size: 0.8rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.empty-state p {
+  margin-bottom: 1rem;
+}
+
+/* Loading */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+}
+
+.spinner-large {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--slate-200);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .action-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .info-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .welcome-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  .welcome-graphic { display: none; }
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+}

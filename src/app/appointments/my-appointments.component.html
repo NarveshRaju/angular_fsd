@@ -1,0 +1,47 @@
+<div class="page-container">
+  <div class="appts-page" *ngIf="!loading">
+    <div class="page-header animate-fadeInUp">
+      <div>
+        <h1>My Appointments</h1>
+        <p class="text-muted">View and manage your scheduled appointments</p>
+      </div>
+      <button class="btn btn-primary" routerLink="/appointments/book">+ New Appointment</button>
+    </div>
+
+    <div class="appointments-list animate-fadeInUp" style="animation-delay: 0.1s">
+      <div class="appt-row card" *ngFor="let appt of appointments">
+        <div class="appt-left">
+          <div class="date-block">
+            <span class="date-value">{{ appt.appointmentDate }}</span>
+            <span class="time-value">{{ appt.appointmentTime }}</span>
+          </div>
+        </div>
+        <div class="appt-center">
+          <h3>Dr. {{ appt.doctorName }}</h3>
+          <p class="text-muted">{{ appt.departmentName }}</p>
+          <p class="reason" *ngIf="appt.reason">{{ appt.reason }}</p>
+        </div>
+        <div class="appt-right">
+          <span class="badge" [ngClass]="getStatusClass(appt.status)">{{ appt.status }}</span>
+          <span class="token" *ngIf="appt.tokenNumber">Token: {{ appt.tokenNumber }}</span>
+          <button class="btn btn-danger btn-sm"
+            *ngIf="appt.status !== 'CANCELLED' && appt.status !== 'COMPLETED'"
+            (click)="cancelAppointment(appt.id)">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="appointments.length === 0" class="empty-state animate-fadeIn">
+      <h3>No appointments yet</h3>
+      <p class="text-muted mb-2">Book your first appointment with our specialist doctors</p>
+      <button class="btn btn-primary" routerLink="/appointments/book">Book Appointment</button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner-large"></div>
+    <p class="text-muted mt-2">Loading appointments...</p>
+  </div>
+</div>
