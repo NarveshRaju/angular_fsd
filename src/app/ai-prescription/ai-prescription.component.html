@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="page-header animate-fadeInUp">
-    <h1>🤖 AI Prescription Scanner</h1>
+    <h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:6px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>AI Prescription Scanner</h1>
     <p class="text-muted">Upload a prescription image for AI-powered analysis and ask questions about your medicines</p>
   </div>
 
@@ -11,7 +11,7 @@
       <!-- Upload Section -->
       <div class="card upload-card animate-fadeInUp" *ngIf="!currentAnalysis">
         <h3 class="card-title">
-          <span class="icon">📤</span> Upload Prescription
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Prescription
         </h3>
 
         <div class="form-group">
@@ -27,12 +27,12 @@
              (click)="fileInput.click()">
           <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" hidden />
           <div class="drop-content" *ngIf="!selectedFile">
-            <div class="drop-icon">📷</div>
+            <div class="drop-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="13.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
             <p>Drag & drop your prescription image here</p>
             <span class="text-muted">or click to browse</span>
           </div>
           <div class="drop-content selected" *ngIf="selectedFile">
-            <div class="drop-icon">✅</div>
+            <div class="drop-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--success, #22c55e)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
             <p>{{ selectedFile.name }}</p>
             <span class="text-muted">{{ (selectedFile.size / 1024).toFixed(1) }} KB</span>
           </div>
@@ -40,7 +40,7 @@
 
         <button class="btn btn-primary btn-full" (click)="uploadPrescription()"
                 [disabled]="!selectedFile || !prescriptionIdInput || uploading">
-          <span *ngIf="!uploading">🔍 Analyze Prescription</span>
+          <span *ngIf="!uploading"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Analyze Prescription</span>
           <span *ngIf="uploading" class="loading-text">
             <span class="spinner"></span> Analyzing with AI...
           </span>
@@ -53,7 +53,7 @@
       <div class="card analysis-card animate-fadeInUp" *ngIf="currentAnalysis">
         <div class="analysis-header">
           <h3 class="card-title">
-            <span class="icon">📋</span> Analysis Results
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Analysis Results
           </h3>
           <button class="btn btn-outline btn-sm" (click)="clearAnalysis()">← New Scan</button>
         </div>
@@ -80,13 +80,13 @@
 
         <!-- Extracted Text -->
         <div class="result-section" *ngIf="currentAnalysis.extractedText">
-          <h4>📝 Extracted Text</h4>
+          <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg> Extracted Text</h4>
           <div class="result-content">{{ currentAnalysis.extractedText }}</div>
         </div>
 
         <!-- Analyzed Medicines -->
         <div class="result-section" *ngIf="currentAnalysis.analyzedMedicines">
-          <h4>💊 Identified Medicines</h4>
+          <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg> Identified Medicines</h4>
           <div class="result-content medicines">{{ currentAnalysis.analyzedMedicines }}</div>
         </div>
       </div>
@@ -94,7 +94,7 @@
       <!-- Past Analyses -->
       <div class="card history-card animate-fadeInUp" style="animation-delay: 0.1s">
         <h3 class="card-title">
-          <span class="icon">📚</span> Past Analyses
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Past Analyses
         </h3>
         <div *ngIf="loadingHistory" class="loading-state">
           <span class="spinner"></span> Loading...
@@ -106,7 +106,7 @@
           <div class="past-item" *ngFor="let analysis of pastAnalyses"
                (click)="viewAnalysis(analysis)"
                [class.active]="currentAnalysis?.imageId === analysis.imageId">
-            <div class="past-icon">🔬</div>
+            <div class="past-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
             <div class="past-info">
               <span class="past-id">Image #{{ analysis.imageId }}</span>
               <span class="text-muted past-date">{{ analysis.analyzedAt | date:'medium' }}</span>
@@ -124,13 +124,13 @@
     <div class="right-panel">
       <div class="card chat-card animate-fadeInUp" style="animation-delay: 0.15s">
         <h3 class="card-title">
-          <span class="icon">💬</span> Ask about your Prescription
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Ask about your Prescription
         </h3>
 
         <div class="chat-container" *ngIf="currentAnalysis">
           <div class="chat-messages" #chatContainer>
             <div class="chat-welcome" *ngIf="chatMessages.length === 0">
-              <div class="welcome-icon">🤖</div>
+              <div class="welcome-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
               <p>Ask me anything about your prescription!</p>
               <div class="suggestions">
                 <button class="suggestion-chip" (click)="currentQuestion = 'What are the side effects?'; askQuestion()">
@@ -147,11 +147,11 @@
 
             <div *ngFor="let msg of chatMessages" class="chat-pair">
               <div class="chat-bubble user">
-                <span class="bubble-icon">👤</span>
+                <span class="bubble-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                 <p>{{ msg.question }}</p>
               </div>
               <div class="chat-bubble ai">
-                <span class="bubble-icon">🤖</span>
+                <span class="bubble-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg></span>
                 <p>{{ msg.answer }}</p>
               </div>
             </div>
@@ -172,13 +172,13 @@
                    [disabled]="askingQuestion" />
             <button class="btn btn-primary btn-send" (click)="askQuestion()"
                     [disabled]="!currentQuestion.trim() || askingQuestion">
-              ➤
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
             </button>
           </div>
         </div>
 
         <div class="chat-disabled" *ngIf="!currentAnalysis">
-          <div class="disabled-icon">🔒</div>
+          <div class="disabled-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
           <p class="text-muted">Upload or select a prescription to start chatting</p>
         </div>
       </div>

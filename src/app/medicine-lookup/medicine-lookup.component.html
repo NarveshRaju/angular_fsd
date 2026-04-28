@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="page-header animate-fadeInUp">
-    <h1>💊 AI Medicine Lookup</h1>
+    <h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:6px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>AI Medicine Lookup</h1>
     <p class="text-muted">Get AI-powered information about any medicine — usage, dosage, side effects, and interactions</p>
   </div>
 
@@ -9,7 +9,7 @@
     <div class="main-panel">
       <div class="card search-card animate-fadeInUp">
         <div class="search-box">
-          <div class="search-icon">🔍</div>
+          <div class="search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
           <input type="text" [(ngModel)]="medicineName"
                  (keyup.enter)="searchMedicine()"
                  placeholder="Enter medicine name (e.g., Aspirin, Paracetamol, Metformin)"
@@ -35,7 +35,7 @@
 
       <!-- Error -->
       <div class="error-card animate-fadeInUp" *ngIf="errorMessage">
-        <span class="error-icon">⚠️</span>
+        <span class="error-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
         <p>{{ errorMessage }}</p>
       </div>
 
@@ -43,20 +43,20 @@
       <div class="card result-card animate-fadeInUp" *ngIf="medicineInfo">
         <div class="result-header">
           <h3 class="card-title">
-            <span class="icon">💊</span> {{ medicineName }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg> {{ medicineName }}
           </h3>
           <button class="btn btn-outline btn-sm" (click)="clearSearch()">Clear</button>
         </div>
         <div class="result-content" style="white-space: pre-wrap; line-height: 1.7; font-size: 0.95rem;">{{ medicineInfo }}</div>
         <div class="result-footer">
-          <span class="ai-badge">🤖 Powered by Gemini AI</span>
+          <span class="ai-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px;margin-right:3px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg> Powered by Gemini AI</span>
         </div>
       </div>
 
       <!-- Empty State -->
       <div class="card empty-card animate-fadeInUp" *ngIf="!medicineInfo && !loading && !errorMessage">
         <div class="empty-content">
-          <div class="empty-icon">🧪</div>
+          <div class="empty-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
           <h3>Search for any medicine</h3>
           <p class="text-muted">Type a medicine name above to get detailed AI-powered information including usage, dosage recommendations, side effects, and drug interactions.</p>
         </div>
@@ -67,7 +67,7 @@
     <div class="side-panel">
       <div class="card history-card animate-fadeInUp" style="animation-delay: 0.1s">
         <h3 class="card-title">
-          <span class="icon">🕐</span> Recent Searches
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Recent Searches
         </h3>
         <div *ngIf="searchHistory.length === 0" class="empty-state">
           <p class="text-muted">Your searches will appear here</p>
@@ -75,7 +75,7 @@
         <div class="history-list">
           <div class="history-item" *ngFor="let item of searchHistory"
                (click)="loadFromHistory(item)">
-            <span class="history-icon">💊</span>
+            <span class="history-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></span>
             <span class="history-name">{{ item.name }}</span>
           </div>
         </div>
@@ -83,7 +83,7 @@
 
       <div class="card tips-card animate-fadeInUp" style="animation-delay: 0.2s">
         <h3 class="card-title">
-          <span class="icon">💡</span> Tips
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Tips
         </h3>
         <ul class="tips-list">
           <li>Search by brand name or generic name</li>
