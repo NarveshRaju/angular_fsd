@@ -1,0 +1,92 @@
+.page-container { max-width: 1200px; margin: 0 auto; }
+.page-header { margin-bottom: 1.5rem; }
+.page-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.03em; margin-bottom: 0.25rem; }
+
+.content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; align-items: start; }
+
+.card-title {
+  font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.5rem; letter-spacing: -0.02em;
+}
+.icon { font-size: 1.1rem; }
+
+/* Search */
+.search-box {
+  display: flex; gap: 0.5rem; align-items: center; background: var(--bg-secondary);
+  border: 1.5px solid var(--border); border-radius: var(--radius-md);
+  padding: 0.45rem 0.5rem 0.45rem 1rem; transition: border-color 0.2s;
+}
+.search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-50); }
+.search-icon { font-size: 1.2rem; }
+.search-input {
+  flex: 1; border: none; background: transparent; font-size: 0.95rem;
+  padding: 0.5rem; outline: none; font-family: 'Inter', sans-serif; color: var(--text);
+}
+
+.quick-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+.tag {
+  padding: 0.35rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-full);
+  font-size: 0.82rem; cursor: pointer; transition: all 0.2s; color: var(--text-muted); background: var(--bg);
+}
+.tag:hover { border-color: var(--accent); color: var(--accent-dark); background: var(--accent-50); }
+
+/* Error */
+.error-card {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: var(--danger-bg); border: 1px solid rgba(196,64,64,0.15);
+  border-radius: var(--radius); padding: 0.85rem 1rem; margin-top: 1rem; color: var(--danger);
+}
+.error-icon { font-size: 1.2rem; }
+.error-card p { margin: 0; font-size: 0.88rem; }
+
+/* Results */
+.result-card { margin-top: 1rem; }
+.result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.result-header .card-title { margin-bottom: 0; }
+.result-content {
+  background: var(--bg-secondary); padding: 1.1rem; border-radius: var(--radius);
+  font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary);
+  white-space: pre-wrap; border: 1px solid var(--border);
+}
+.result-footer { margin-top: 1rem; text-align: right; }
+.ai-badge {
+  display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem;
+  background: var(--accent-50); border: 1px solid var(--accent-200);
+  border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 600; color: var(--accent-dark);
+}
+
+/* Empty State */
+.empty-card { margin-top: 1rem; }
+.empty-content { text-align: center; padding: 3rem 1rem; }
+.empty-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+.empty-content h3 { font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; }
+
+/* Sidebar */
+.side-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+.history-list { display: flex; flex-direction: column; gap: 0.3rem; }
+.history-item {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 0.75rem;
+  border-radius: var(--radius); cursor: pointer; transition: all 0.2s;
+}
+.history-item:hover { background: var(--bg-secondary); }
+.history-icon { font-size: 0.95rem; }
+.history-name { font-size: 0.88rem; font-weight: 500; color: var(--text-secondary); }
+.empty-state { text-align: center; padding: 1rem; }
+
+.tips-list { list-style: none; padding: 0; margin: 0; }
+.tips-list li {
+  padding: 0.5rem 0; font-size: 0.85rem; color: var(--text-muted);
+  border-bottom: 1px solid var(--border-light); padding-left: 1.2rem; position: relative;
+}
+.tips-list li::before { content: '•'; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
+.tips-list li:last-child { border-bottom: none; }
+
+.spinner {
+  width: 16px; height: 16px; border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block;
+}
+.loading-text { display: flex; align-items: center; gap: 0.4rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-fadeInUp { animation: fadeInUp 0.45s ease-out forwards; opacity: 0; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; } }

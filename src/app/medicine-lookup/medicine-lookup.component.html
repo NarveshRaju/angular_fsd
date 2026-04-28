@@ -1,0 +1,97 @@
+<div class="page-container">
+  <div class="page-header animate-fadeInUp">
+    <h1>💊 AI Medicine Lookup</h1>
+    <p class="text-muted">Get AI-powered information about any medicine — usage, dosage, side effects, and interactions</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- Search Section -->
+    <div class="main-panel">
+      <div class="card search-card animate-fadeInUp">
+        <div class="search-box">
+          <div class="search-icon">🔍</div>
+          <input type="text" [(ngModel)]="medicineName"
+                 (keyup.enter)="searchMedicine()"
+                 placeholder="Enter medicine name (e.g., Aspirin, Paracetamol, Metformin)"
+                 class="search-input" />
+          <button class="btn btn-primary" (click)="searchMedicine()"
+                  [disabled]="!medicineName.trim() || loading">
+            <span *ngIf="!loading">Search</span>
+            <span *ngIf="loading" class="loading-text">
+              <span class="spinner"></span> Searching...
+            </span>
+          </button>
+        </div>
+
+        <div class="quick-tags">
+          <span class="tag" (click)="medicineName = 'Aspirin'; searchMedicine()">Aspirin</span>
+          <span class="tag" (click)="medicineName = 'Paracetamol'; searchMedicine()">Paracetamol</span>
+          <span class="tag" (click)="medicineName = 'Amoxicillin'; searchMedicine()">Amoxicillin</span>
+          <span class="tag" (click)="medicineName = 'Metformin'; searchMedicine()">Metformin</span>
+          <span class="tag" (click)="medicineName = 'Ibuprofen'; searchMedicine()">Ibuprofen</span>
+          <span class="tag" (click)="medicineName = 'Omeprazole'; searchMedicine()">Omeprazole</span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="error-card animate-fadeInUp" *ngIf="errorMessage">
+        <span class="error-icon">⚠️</span>
+        <p>{{ errorMessage }}</p>
+      </div>
+
+      <!-- Results -->
+      <div class="card result-card animate-fadeInUp" *ngIf="medicineInfo">
+        <div class="result-header">
+          <h3 class="card-title">
+            <span class="icon">💊</span> {{ medicineName }}
+          </h3>
+          <button class="btn btn-outline btn-sm" (click)="clearSearch()">Clear</button>
+        </div>
+        <div class="result-content" style="white-space: pre-wrap; line-height: 1.7; font-size: 0.95rem;">{{ medicineInfo }}</div>
+        <div class="result-footer">
+          <span class="ai-badge">🤖 Powered by Gemini AI</span>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="card empty-card animate-fadeInUp" *ngIf="!medicineInfo && !loading && !errorMessage">
+        <div class="empty-content">
+          <div class="empty-icon">🧪</div>
+          <h3>Search for any medicine</h3>
+          <p class="text-muted">Type a medicine name above to get detailed AI-powered information including usage, dosage recommendations, side effects, and drug interactions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar: Search History -->
+    <div class="side-panel">
+      <div class="card history-card animate-fadeInUp" style="animation-delay: 0.1s">
+        <h3 class="card-title">
+          <span class="icon">🕐</span> Recent Searches
+        </h3>
+        <div *ngIf="searchHistory.length === 0" class="empty-state">
+          <p class="text-muted">Your searches will appear here</p>
+        </div>
+        <div class="history-list">
+          <div class="history-item" *ngFor="let item of searchHistory"
+               (click)="loadFromHistory(item)">
+            <span class="history-icon">💊</span>
+            <span class="history-name">{{ item.name }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card tips-card animate-fadeInUp" style="animation-delay: 0.2s">
+        <h3 class="card-title">
+          <span class="icon">💡</span> Tips
+        </h3>
+        <ul class="tips-list">
+          <li>Search by brand name or generic name</li>
+          <li>Ask about specific dosage forms (tablet, syrup)</li>
+          <li>Check interactions before mixing medicines</li>
+          <li>Always consult your doctor before starting medication</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,7 @@ import { AuthService } from '../../../../services/auth.service';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  registerForm: FormGroup;
+  patientForm: FormGroup;
   errorMessage = '';
   successMessage = '';
   loading = false;
@@ -23,7 +23,7 @@ export class RegisterComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    this.registerForm = this.fb.group({
+    this.patientForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
@@ -40,28 +40,38 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-    if (this.registerForm.invalid) return;
+    if (this.patientForm.invalid) {
+      this.patientForm.markAllAsTouched();
+      return;
+    }
 
     this.loading = true;
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.authService.register(this.registerForm.value).subscribe({
+    this.authService.register(this.patientForm.value).subscribe({
       next: () => {
         this.loading = false;
-        // Auto-login after registration
-        const { email, password } = this.registerForm.value;
+        const { email, password } = this.patientForm.value;
         this.authService.login({ email, password }).subscribe({
           next: () => this.router.navigate(['/dashboard']),
           error: () => {
-            this.successMessage = 'Registration successful! Please log in.';
+            this.successMessage = 'Account created successfully! Redirecting to login...';
             setTimeout(() => this.router.navigate(['/auth/login']), 1500);
           }
         });
       },
       error: (err: any) => {
         this.loading = false;
-        this.errorMessage = err?.error?.message || 'Registration failed. Please try again.';
+        if (err?.error?.message) {
+          this.errorMessage = err.error.message;
+        } else if (err?.status === 0) {
+          this.errorMessage = 'Unable to connect to the server. Please check your connection.';
+        } else if (err?.status === 409) {
+          this.errorMessage = 'An account with this email already exists.';
+        } else {
+          this.errorMessage = 'Registration failed. Please try again.';
+        }
       }
     });
   }

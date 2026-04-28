@@ -10,16 +10,20 @@ import { AuthService } from '../../../../services/auth.service';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  @Input() applicationName: string = 'HealthCare';
+  @Input() applicationName: string = 'HealthCare Portal';
 
   isLoggedIn = false;
+  isDoctorRole = false;
   private authSub?: Subscription;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.authSub = this.authService.isLoggedIn$.subscribe(
-      (loggedIn: boolean) => this.isLoggedIn = loggedIn
+      (loggedIn: boolean) => {
+        this.isLoggedIn = loggedIn;
+        this.isDoctorRole = this.authService.isDoctor();
+      }
     );
   }
 

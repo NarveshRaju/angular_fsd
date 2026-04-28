@@ -5,16 +5,29 @@
   <ul>
     <!-- Not logged in -->
     <ng-container *ngIf="!isLoggedIn">
-      <li><a routerLink="/auth/login" routerLinkActive="active-link">Login</a></li>
+      <li><a routerLink="/auth/login" routerLinkActive="active-link">Sign In</a></li>
       <li><a routerLink="/auth/register" routerLinkActive="active-link">Register</a></li>
     </ng-container>
 
-    <!-- Logged in -->
-    <ng-container *ngIf="isLoggedIn">
+    <!-- Patient Navigation -->
+    <ng-container *ngIf="isLoggedIn && !isDoctorRole">
       <li><a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a></li>
       <li><a routerLink="/doctors" routerLinkActive="active-link">Doctors</a></li>
+      <li><a routerLink="/appointments/book" routerLinkActive="active-link">Book</a></li>
       <li><a routerLink="/appointments/my" routerLinkActive="active-link">Appointments</a></li>
+      <li><a routerLink="/ai-prescription" routerLinkActive="active-link">AI Scanner</a></li>
+      <li><a routerLink="/medicine-lookup" routerLinkActive="active-link">Medicine</a></li>
+      <li><a routerLink="/medical-history" routerLinkActive="active-link">History</a></li>
       <li><a routerLink="/profile" routerLinkActive="active-link">Profile</a></li>
+      <li><a href="javascript:void(0)" (click)="logout()" class="logout-link">Logout</a></li>
+    </ng-container>
+
+    <!-- Doctor Navigation -->
+    <ng-container *ngIf="isLoggedIn && isDoctorRole">
+      <li><a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a></li>
+      <li><a routerLink="/appointments/my" routerLinkActive="active-link">Appointments</a></li>
+      <li><a routerLink="/ai-prescription" routerLinkActive="active-link">AI Scanner</a></li>
+      <li><a routerLink="/medicine-lookup" routerLinkActive="active-link">Medicine</a></li>
       <li><a href="javascript:void(0)" (click)="logout()" class="logout-link">Logout</a></li>
     </ng-container>
   </ul>

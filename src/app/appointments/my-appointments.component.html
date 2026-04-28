@@ -2,10 +2,10 @@
   <div class="appts-page" *ngIf="!loading">
     <div class="page-header animate-fadeInUp">
       <div>
-        <h1>My Appointments</h1>
-        <p class="text-muted">View and manage your scheduled appointments</p>
+        <h1>{{ isDoctor ? 'Patient Appointments' : 'My Appointments' }}</h1>
+        <p class="text-muted">View and manage your {{ isDoctor ? 'patient' : 'scheduled' }} appointments</p>
       </div>
-      <button class="btn btn-primary" routerLink="/appointments/book">+ New Appointment</button>
+      <button *ngIf="!isDoctor" class="btn btn-primary" routerLink="/appointments/book">+ New Appointment</button>
     </div>
 
     <div class="appointments-list animate-fadeInUp" style="animation-delay: 0.1s">
@@ -17,13 +17,33 @@
           </div>
         </div>
         <div class="appt-center">
-          <h3>Dr. {{ appt.doctorName }}</h3>
+          <h3>{{ isDoctor ? appt.patientName : 'Dr. ' + appt.doctorName }}</h3>
           <p class="text-muted">{{ appt.departmentName }}</p>
           <p class="reason" *ngIf="appt.reason">{{ appt.reason }}</p>
+
+          <!-- Prescription Details for Completed Appointments -->
+          <div *ngIf="appt.status === 'COMPLETED' && appt.diagnosis" class="rx-summary">
+            <div class="rx-row"><span class="rx-label">Diagnosis:</span> {{ appt.diagnosis }}</div>
+            <div class="rx-row" *ngIf="appt.medicines"><span class="rx-label">Medicines:</span><pre class="rx-text">{{ appt.medicines }}</pre></div>
+            <div class="rx-row" *ngIf="appt.consultationNotes"><span class="rx-label">Notes:</span> {{ appt.consultationNotes }}</div>
+          </div>
+
+          <!-- Rating Display -->
+          <div *ngIf="appt.rating" class="rating-inline">
+            <span *ngFor="let s of [1,2,3,4,5]" class="star" [class.filled]="s <= appt.rating">★</span>
+            <span class="text-muted" style="font-size: 0.75rem; margin-left: 0.35rem">{{ appt.feedbackComment }}</span>
+          </div>
         </div>
         <div class="appt-right">
-          <span class="badge" [ngClass]="getStatusClass(appt.status)">{{ appt.status }}</span>
+          <span class="badge" [ngClass]="getStatusClass(appt.status)">
+            {{ appt.status === 'IN_PROGRESS' ? 'In Progress' : appt.status }}
+          </span>
           <span class="token" *ngIf="appt.tokenNumber">Token: {{ appt.tokenNumber }}</span>
+          <button *ngIf="isDoctor && appt.status !== 'COMPLETED' && appt.status !== 'CANCELLED'"
+            class="btn btn-primary btn-sm" style="margin-right: 0.5rem"
+            (click)="completeAppointment(appt.id)">
+            ✓ Complete
+          </button>
           <button class="btn btn-danger btn-sm"
             *ngIf="appt.status !== 'CANCELLED' && appt.status !== 'COMPLETED'"
             (click)="cancelAppointment(appt.id)">
@@ -35,8 +55,9 @@
 
     <div *ngIf="appointments.length === 0" class="empty-state animate-fadeIn">
       <h3>No appointments yet</h3>
-      <p class="text-muted mb-2">Book your first appointment with our specialist doctors</p>
-      <button class="btn btn-primary" routerLink="/appointments/book">Book Appointment</button>
+      <p class="text-muted mb-2" *ngIf="!isDoctor">Book your first appointment with our specialist doctors</p>
+      <p class="text-muted mb-2" *ngIf="isDoctor">No patient appointments found</p>
+      <button *ngIf="!isDoctor" class="btn btn-primary" routerLink="/appointments/book">Book Appointment</button>
     </div>
   </div>
 

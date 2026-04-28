@@ -50,4 +50,8 @@ export class DoctorService {
   getDoctorById(id: number): Observable<ApiResponse<DoctorResponse>> {
     return this.http.get<ApiResponse<DoctorResponse>>(`${this.apiUrl}/${id}`);
   }
+
+  updateAvailability(id: number, isAvailable: boolean): Observable<ApiResponse<DoctorResponse>> {
+    return this.http.patch<ApiResponse<DoctorResponse>>(`${this.apiUrl}/${id}/availability?isAvailable=${isAvailable}`, {});
+  }
 }

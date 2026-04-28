@@ -1,0 +1,100 @@
+<div class="page-container">
+  <div class="page-header animate-fadeInUp">
+    <h1>📖 Medical History</h1>
+    <p class="text-muted">Your complete consultation history, vitals, and diagnoses</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="card search-card animate-fadeInUp">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" [(ngModel)]="searchQuery"
+             (keyup.enter)="searchByDiagnosis()"
+             placeholder="Search by diagnosis..." class="search-input" />
+      <button class="btn btn-primary btn-sm" (click)="searchByDiagnosis()">Search</button>
+      <button class="btn btn-outline btn-sm" *ngIf="searchQuery" (click)="searchQuery = ''; loadHistory()">Clear</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state animate-fadeInUp">
+    <div class="spinner-large"></div>
+    <p class="text-muted">Loading medical history...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && history.length === 0" class="card empty-card animate-fadeInUp">
+    <div class="empty-content">
+      <div class="empty-icon">📋</div>
+      <h3>No medical records found</h3>
+      <p class="text-muted">Your consultation history will appear here after your first visit</p>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline" *ngIf="!loading && history.length > 0">
+    <div class="timeline-item animate-fadeInUp" *ngFor="let record of history; let i = index"
+         [style.animation-delay]="(i * 0.08) + 's'">
+      <div class="timeline-marker">
+        <div class="marker-dot"></div>
+        <div class="marker-line" *ngIf="i < history.length - 1"></div>
+      </div>
+
+      <div class="timeline-card" [class.expanded]="expandedId === record.id"
+           (click)="toggleExpand(record.id)">
+        <!-- Header -->
+        <div class="card-header">
+          <div class="date-badge">
+            <span class="date-day">{{ formatDate(record.visitDate) }}</span>
+            <span class="date-time">{{ formatTime(record.visitDate) }}</span>
+          </div>
+          <div class="header-info">
+            <h3 class="diagnosis-title">{{ record.diagnosis }}</h3>
+            <p class="doctor-name">👨‍⚕️ Dr. {{ record.doctorName }}</p>
+          </div>
+          <div class="expand-icon">{{ expandedId === record.id ? '▲' : '▼' }}</div>
+        </div>
+
+        <!-- Vitals Row (always visible) -->
+        <div class="vitals-row">
+          <div class="vital-chip" *ngIf="record.bloodPressure" [ngClass]="getVitalStatus(record.bloodPressure)">
+            <span class="vital-label">BP</span>
+            <span class="vital-value">{{ record.bloodPressure }}</span>
+          </div>
+          <div class="vital-chip" *ngIf="record.temperature">
+            <span class="vital-label">Temp</span>
+            <span class="vital-value">{{ record.temperature }}°F</span>
+          </div>
+          <div class="vital-chip" *ngIf="record.pulse">
+            <span class="vital-label">Pulse</span>
+            <span class="vital-value">{{ record.pulse }} bpm</span>
+          </div>
+          <div class="vital-chip" *ngIf="record.weight">
+            <span class="vital-label">Weight</span>
+            <span class="vital-value">{{ record.weight }} kg</span>
+          </div>
+        </div>
+
+        <!-- Expanded Details -->
+        <div class="expanded-details" *ngIf="expandedId === record.id">
+          <div class="detail-section" *ngIf="record.symptoms">
+            <h4>🤒 Symptoms</h4>
+            <p>{{ record.symptoms }}</p>
+          </div>
+          <div class="detail-section" *ngIf="record.treatment">
+            <h4>💉 Treatment</h4>
+            <p>{{ record.treatment }}</p>
+          </div>
+          <div class="detail-section" *ngIf="record.notes">
+            <h4>📝 Doctor's Notes</h4>
+            <p>{{ record.notes }}</p>
+          </div>
+          <div class="detail-row" *ngIf="record.height">
+            <span class="detail-label">Height</span>
+            <span class="detail-value">{{ record.height }} cm</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

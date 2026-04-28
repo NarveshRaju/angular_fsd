@@ -100,7 +100,11 @@ export class BookAppointmentComponent implements OnInit {
       ...this.appointmentForm.value,
       patientId,
       departmentId: +this.appointmentForm.value.departmentId,
-      doctorId: +this.appointmentForm.value.doctorId
+      doctorId: +this.appointmentForm.value.doctorId,
+      // Spring Boot LocalTime expects HH:mm:ss format
+      appointmentTime: this.appointmentForm.value.appointmentTime.length === 5
+        ? this.appointmentForm.value.appointmentTime + ':00'
+        : this.appointmentForm.value.appointmentTime
     };
 
     this.appointmentService.bookAppointment(formData).subscribe({
@@ -111,6 +115,7 @@ export class BookAppointmentComponent implements OnInit {
       },
       error: (err: any) => {
         this.loading = false;
+        console.error('Appointment booking error:', err);
         this.errorMessage = err?.error?.message || 'Failed to book appointment. Please try again.';
       }
     });

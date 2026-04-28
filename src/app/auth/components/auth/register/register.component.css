@@ -3,33 +3,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f172a 0%, #134e4a 50%, #0f766e 100%);
+  background: var(--bg-secondary);
   padding: 2rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.auth-page::before {
-  content: '';
-  position: absolute;
-  top: -40%;
-  right: -15%;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, transparent 70%);
-  pointer-events: none;
 }
 
 .auth-container {
   width: 100%;
   max-width: 520px;
-  position: relative;
-  z-index: 1;
 }
 
 .auth-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -39,7 +27,7 @@
 }
 
 .auth-card::-webkit-scrollbar-thumb {
-  background: var(--slate-300);
+  background: var(--border);
   border-radius: 4px;
 }
 
@@ -48,24 +36,23 @@
   margin-bottom: 1.5rem;
 }
 
-.auth-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1rem;
-  color: #fff;
-  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.4);
+.auth-logo {
+  font-size: 2rem;
+  color: var(--accent);
+  margin-bottom: 1rem;
 }
 
 .auth-header h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--text);
   margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.auth-header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 .form-row {
@@ -82,19 +69,24 @@
 .auth-footer {
   text-align: center;
   margin-top: 1.5rem;
-  font-size: 0.9rem;
-  color: var(--slate-500);
+  font-size: 0.88rem;
+  color: var(--text-muted);
 }
 
 .auth-footer a {
-  color: var(--primary);
+  color: var(--accent-dark);
   font-weight: 600;
+}
+
+.auth-footer a:hover {
+  color: var(--text);
+  text-decoration: underline;
 }
 
 .spinner {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2px solid rgba(255,255,255,0.3);
   border-radius: 50%;
   border-top-color: #fff;
@@ -109,7 +101,6 @@
   .form-row {
     grid-template-columns: 1fr;
   }
-
   .auth-card {
     padding: 1.5rem;
   }

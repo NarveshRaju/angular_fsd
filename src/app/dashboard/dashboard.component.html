@@ -1,123 +1,357 @@
 <div class="page-container">
   <div class="dashboard" *ngIf="!loading">
-    <!-- Welcome Section -->
-    <div class="welcome-section animate-fadeInUp">
-      <div class="welcome-card">
-        <div class="welcome-content">
-          <h1>{{ getGreeting() }}, {{ patient?.firstName || 'Patient' }} 👋</h1>
-          <p class="text-muted">Welcome to your healthcare dashboard. Here's an overview of your health journey.</p>
-        </div>
-        <div class="welcome-graphic">
-          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
-        </div>
-      </div>
-    </div>
 
-    <!-- Quick Actions -->
-    <div class="quick-actions animate-fadeInUp" style="animation-delay: 0.1s">
-      <h3 class="section-title">Quick Actions</h3>
-      <div class="action-grid">
-        <div class="action-card" routerLink="/appointments/book">
-          <div class="action-icon book-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
+    <!-- ==================== DOCTOR DASHBOARD ==================== -->
+    <ng-container *ngIf="isDoctor()">
+      <div class="welcome-section animate-fadeInUp">
+        <div class="welcome-card">
+          <div>
+            <h1>{{ getGreeting() }}, Dr. {{ userName }}</h1>
+            <p>Here's your practice overview for today</p>
           </div>
-          <h4>Book Appointment</h4>
-          <p>Schedule a visit with our doctors</p>
-        </div>
-
-        <div class="action-card" routerLink="/doctors">
-          <div class="action-icon doc-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
-          <h4>Our Doctors</h4>
-          <p>Browse our specialist physicians</p>
-        </div>
-
-        <div class="action-card" routerLink="/appointments/my">
-          <div class="action-icon appt-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-            </svg>
-          </div>
-          <h4>My Appointments</h4>
-          <p>View your scheduled visits</p>
-        </div>
-
-        <div class="action-card" routerLink="/profile">
-          <div class="action-icon profile-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-          </div>
-          <h4>My Profile</h4>
-          <p>View and update your info</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Patient Info + Appointments Row -->
-    <div class="info-row animate-fadeInUp" style="animation-delay: 0.2s">
-      <!-- Patient Info Card -->
-      <div class="card info-card" *ngIf="patient">
-        <h3 class="section-title">Your Health Card</h3>
-        <div class="health-info">
-          <div class="info-item">
-            <span class="info-label">Blood Group</span>
-            <span class="info-value badge badge-danger">{{ patient.bloodGroup || 'N/A' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Age</span>
-            <span class="info-value">{{ patient.age }} years</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Gender</span>
-            <span class="info-value">{{ patient.gender }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Allergies</span>
-            <span class="info-value">{{ patient.allergies || 'None reported' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Emergency</span>
-            <span class="info-value">{{ patient.emergencyContactName || 'Not set' }}</span>
+          <div class="welcome-actions">
+            <button class="btn btn-outline btn-sm" (click)="toggleAvailability()">
+              <span class="status-dot" [class.available]="doctor?.isAvailable" [class.unavailable]="!doctor?.isAvailable"></span>
+              {{ doctor?.isAvailable ? 'Available' : 'Unavailable' }}
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Upcoming Appointments -->
-      <div class="card appt-card">
-        <h3 class="section-title">Upcoming Appointments</h3>
-        <div *ngIf="upcomingAppointments.length === 0" class="empty-state">
-          <p class="text-muted">No upcoming appointments</p>
-          <button class="btn btn-primary btn-sm" routerLink="/appointments/book">Book Now</button>
-        </div>
-        <div class="appt-list">
-          <div class="appt-item" *ngFor="let appt of upcomingAppointments">
-            <div class="appt-date-badge">
-              <span class="appt-day">{{ appt.appointmentDate }}</span>
+      <div class="stats-grid animate-fadeInUp" style="animation-delay: 0.08s">
+        <div class="stat-card"><div class="stat-value">{{ todayCount }}</div><div class="stat-label">Today</div></div>
+        <div class="stat-card"><div class="stat-value">{{ scheduledCount }}</div><div class="stat-label">Pending</div></div>
+        <div class="stat-card"><div class="stat-value">{{ completedCount }}</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card"><div class="stat-value">{{ totalPatients }}</div><div class="stat-label">Patients</div></div>
+      </div>
+
+      <!-- Active Appointments -->
+      <div class="animate-fadeInUp" style="animation-delay: 0.12s">
+        <div class="card appointments-section">
+          <div class="section-header">
+            <h3 class="section-title">Active Appointments</h3>
+            <a routerLink="/appointments/my" class="view-all">View All →</a>
+          </div>
+          <div *ngIf="getUpcomingDoctorAppointments().length === 0" class="empty-state">
+            <p class="text-muted">No active appointments</p>
+          </div>
+          <div class="appt-table" *ngIf="getUpcomingDoctorAppointments().length > 0">
+            <div class="appt-table-header">
+              <span>Patient</span><span>Date</span><span>Time</span><span>Reason</span><span>Status</span><span>Actions</span>
             </div>
-            <div class="appt-details">
-              <h4>Dr. {{ appt.doctorName }}</h4>
-              <p class="text-muted">{{ appt.departmentName }} · {{ appt.appointmentTime }}</p>
+            <div class="appt-table-row" *ngFor="let appt of getUpcomingDoctorAppointments()">
+              <span class="patient-name">{{ appt.patientName }}</span>
+              <span>{{ appt.appointmentDate }}</span>
+              <span>{{ appt.appointmentTime }}</span>
+              <span class="reason-cell">{{ appt.reason || '—' }}</span>
+              <span>
+                <span class="badge" [ngClass]="{
+                  'badge-success': appt.status === 'SCHEDULED',
+                  'badge-warning': appt.status === 'IN_PROGRESS',
+                  'badge-info': appt.status === 'COMPLETED'
+                }">{{ appt.status === 'IN_PROGRESS' ? 'In Progress' : appt.status }}</span>
+              </span>
+              <span class="action-buttons">
+                <button *ngIf="appt.status === 'SCHEDULED'"
+                  class="btn btn-sm btn-outline" (click)="startAppointment(appt)">
+                  ▶ Start
+                </button>
+                <button *ngIf="appt.status === 'IN_PROGRESS' || appt.status === 'SCHEDULED'"
+                  class="btn btn-sm btn-primary" (click)="openConsultation(appt)">
+                  📋 Consult
+                </button>
+              </span>
             </div>
-            <span class="badge" [ngClass]="{
-              'badge-success': appt.status === 'SCHEDULED',
-              'badge-warning': appt.status === 'PENDING',
-              'badge-info': appt.status === 'COMPLETED'
-            }">{{ appt.status }}</span>
           </div>
         </div>
       </div>
+
+      <!-- Recent Completed -->
+      <div class="animate-fadeInUp" style="animation-delay: 0.16s" *ngIf="getCompletedAppointments().length > 0">
+        <div class="card">
+          <h3 class="section-title">Recent Consultations</h3>
+          <div class="completed-list">
+            <div class="completed-item" *ngFor="let appt of getCompletedAppointments()">
+              <div class="completed-info">
+                <h4>{{ appt.patientName }}</h4>
+                <p class="text-muted">{{ appt.appointmentDate }} · {{ appt.departmentName }}</p>
+              </div>
+              <div class="completed-diagnosis" *ngIf="appt.diagnosis">
+                <span class="diagnosis-label">Diagnosis:</span> {{ appt.diagnosis }}
+              </div>
+              <div *ngIf="appt.rating" class="rating-display">
+                <span *ngFor="let s of getStarArray()" class="star" [class.filled]="s <= appt.rating">★</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ==================== CONSULTATION MODAL ==================== -->
+    <div class="modal-overlay" *ngIf="showConsultModal" (click)="closeConsultation()">
+      <div class="modal-panel" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h2>Consultation</h2>
+            <p class="text-muted" *ngIf="consultAppt">{{ consultAppt.patientName }} · {{ consultAppt.appointmentDate }}</p>
+          </div>
+          <button class="modal-close" (click)="closeConsultation()">✕</button>
+        </div>
+
+        <div *ngIf="consultSuccess" class="alert alert-success" style="margin: 1rem 0">{{ consultSuccess }}</div>
+        <div *ngIf="consultError" class="alert alert-danger" style="margin: 1rem 0">{{ consultError }}</div>
+
+        <div class="modal-body">
+          <!-- Patient History Panel -->
+          <div class="history-panel" *ngIf="patientHistory.length > 0">
+            <h4 class="panel-title">📋 Patient History</h4>
+            <div class="history-mini" *ngFor="let h of patientHistory.slice(0, 3)">
+              <div class="history-mini-date">{{ h.visitDate | date:'mediumDate' }}</div>
+              <div class="history-mini-diag">{{ h.diagnosis }}</div>
+              <div class="history-mini-vitals" *ngIf="h.bloodPressure">BP: {{ h.bloodPressure }}</div>
+            </div>
+          </div>
+          <div class="history-panel empty" *ngIf="patientHistory.length === 0">
+            <p class="text-muted" style="font-size: 0.85rem">No previous visit history</p>
+          </div>
+
+          <!-- Consultation Form -->
+          <div class="consult-form">
+            <div class="form-section">
+              <h4 class="form-section-title">Clinical Assessment</h4>
+              <div class="form-group">
+                <label>Symptoms *</label>
+                <textarea class="form-control" [(ngModel)]="consultForm.symptoms" rows="2" placeholder="Patient's reported symptoms"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Diagnosis *</label>
+                <input type="text" class="form-control" [(ngModel)]="consultForm.diagnosis" placeholder="e.g., Acute Bronchitis" />
+              </div>
+              <div class="form-group">
+                <label>Treatment Plan</label>
+                <textarea class="form-control" [(ngModel)]="consultForm.treatment" rows="2" placeholder="Treatment approach and plan"></textarea>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">Vitals</h4>
+              <div class="vitals-grid">
+                <div class="form-group">
+                  <label>Blood Pressure</label>
+                  <input type="text" class="form-control" [(ngModel)]="consultForm.bloodPressure" placeholder="e.g., 120/80" />
+                </div>
+                <div class="form-group">
+                  <label>Temperature (°F)</label>
+                  <input type="number" class="form-control" [(ngModel)]="consultForm.temperature" placeholder="98.6" />
+                </div>
+                <div class="form-group">
+                  <label>Pulse (bpm)</label>
+                  <input type="number" class="form-control" [(ngModel)]="consultForm.pulse" placeholder="72" />
+                </div>
+                <div class="form-group">
+                  <label>Weight (kg)</label>
+                  <input type="number" class="form-control" [(ngModel)]="consultForm.weight" placeholder="70" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">Prescription</h4>
+              <div class="form-group">
+                <label>Medicines</label>
+                <textarea class="form-control" [(ngModel)]="consultForm.medicines" rows="3"
+                  placeholder="e.g., Paracetamol 500mg - 2x daily for 5 days&#10;Amoxicillin 250mg - 3x daily for 7 days"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Instructions</label>
+                <input type="text" class="form-control" [(ngModel)]="consultForm.instructions" placeholder="Take after food. Drink plenty of fluids." />
+              </div>
+              <div class="form-group">
+                <label>Follow-up Instructions</label>
+                <input type="text" class="form-control" [(ngModel)]="consultForm.followUpInstructions" placeholder="Follow up in 1 week if symptoms persist" />
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">Follow-up & Notes</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Schedule Follow-up (optional)</label>
+                  <input type="date" class="form-control" [(ngModel)]="consultForm.followUpDate" />
+                </div>
+                <div class="form-group">
+                  <label>Additional Notes</label>
+                  <input type="text" class="form-control" [(ngModel)]="consultForm.notes" placeholder="Any additional notes" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-outline" (click)="closeConsultation()">Cancel</button>
+          <button class="btn btn-primary" (click)="submitConsultation()" [disabled]="consultLoading || !consultForm.diagnosis">
+            <span *ngIf="!consultLoading">Complete Consultation</span>
+            <span *ngIf="consultLoading" class="spinner"></span>
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- ==================== PATIENT DASHBOARD ==================== -->
+    <ng-container *ngIf="!isDoctor()">
+      <div class="welcome-section animate-fadeInUp">
+        <div class="welcome-card">
+          <div>
+            <h1>{{ getGreeting() }}, {{ patient?.firstName || 'there' }}</h1>
+            <p>Here's an overview of your health journey</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Symptom Checker -->
+      <div class="animate-fadeInUp" style="animation-delay: 0.05s">
+        <div class="card symptom-card">
+          <div class="symptom-header" (click)="toggleSymptomChecker()">
+            <div>
+              <h3 class="section-title" style="margin-bottom: 0">🤖 AI Symptom Checker</h3>
+              <p class="text-muted" style="font-size: 0.82rem">Describe your symptoms and get AI-powered guidance</p>
+            </div>
+            <span class="toggle-icon">{{ showSymptomChecker ? '−' : '+' }}</span>
+          </div>
+          <div *ngIf="showSymptomChecker" class="symptom-body">
+            <textarea class="form-control" [(ngModel)]="symptomText" rows="3"
+              placeholder="Describe your symptoms... e.g., I've had a persistent headache for 3 days with mild fever and fatigue"></textarea>
+            <button class="btn btn-primary btn-sm" style="margin-top: 0.75rem" (click)="checkSymptoms()" [disabled]="symptomLoading || !symptomText.trim()">
+              <span *ngIf="!symptomLoading">Analyze Symptoms</span>
+              <span *ngIf="symptomLoading">Analyzing...</span>
+            </button>
+            <div *ngIf="symptomResult" class="symptom-result">
+              <pre class="result-text">{{ symptomResult }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions animate-fadeInUp" style="animation-delay: 0.08s">
+        <div class="action-grid">
+          <div class="action-card" routerLink="/appointments/book">
+            <span class="action-card-icon">📅</span><h4>Book Appointment</h4><p>Schedule a visit</p>
+          </div>
+          <div class="action-card" routerLink="/doctors">
+            <span class="action-card-icon">👨‍⚕️</span><h4>Our Doctors</h4><p>Browse specialists</p>
+          </div>
+          <div class="action-card" routerLink="/appointments/my">
+            <span class="action-card-icon">📋</span><h4>My Appointments</h4><p>View scheduled visits</p>
+          </div>
+          <div class="action-card" routerLink="/ai-prescription">
+            <span class="action-card-icon">🤖</span><h4>AI Scanner</h4><p>Analyze prescriptions</p>
+          </div>
+          <div class="action-card" routerLink="/medicine-lookup">
+            <span class="action-card-icon">💊</span><h4>Medicine Lookup</h4><p>Drug info & interactions</p>
+          </div>
+          <div class="action-card" routerLink="/medical-history">
+            <span class="action-card-icon">📊</span><h4>Medical History</h4><p>Full health timeline</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointments with Prescription Details -->
+      <div class="two-col animate-fadeInUp" style="animation-delay: 0.12s">
+        <div class="card profile-card" *ngIf="patient">
+          <h3 class="section-title">Health Card</h3>
+          <div class="profile-items">
+            <div class="profile-row"><span class="profile-label">Blood Group</span><span class="badge badge-danger">{{ patient.bloodGroup || 'N/A' }}</span></div>
+            <div class="profile-row"><span class="profile-label">Age</span><span class="profile-value">{{ patient.age }} years</span></div>
+            <div class="profile-row"><span class="profile-label">Gender</span><span class="profile-value">{{ patient.gender }}</span></div>
+            <div class="profile-row"><span class="profile-label">Allergies</span><span class="profile-value">{{ patient.allergies || 'None' }}</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Recent Appointments</h3>
+          <div *ngIf="upcomingAppointments.length === 0" class="empty-state">
+            <p class="text-muted">No appointments yet</p>
+            <button class="btn btn-primary btn-sm mt-2" routerLink="/appointments/book">Book Now</button>
+          </div>
+          <div class="appt-list">
+            <div class="appt-item-card" *ngFor="let appt of upcomingAppointments">
+              <div class="appt-item-header">
+                <div class="appt-details">
+                  <h4>Dr. {{ appt.doctorName }}</h4>
+                  <p class="text-muted">{{ appt.departmentName }} · {{ appt.appointmentDate }} · {{ appt.appointmentTime }}</p>
+                </div>
+                <span class="badge" [ngClass]="{
+                  'badge-success': appt.status === 'SCHEDULED',
+                  'badge-warning': appt.status === 'IN_PROGRESS',
+                  'badge-info': appt.status === 'COMPLETED'
+                }">{{ appt.status === 'IN_PROGRESS' ? 'In Progress' : appt.status }}</span>
+              </div>
+
+              <!-- Show prescription for completed appointments -->
+              <div *ngIf="appt.status === 'COMPLETED' && appt.diagnosis" class="prescription-summary">
+                <div class="rx-row"><span class="rx-label">Diagnosis</span><span class="rx-value">{{ appt.diagnosis }}</span></div>
+                <div class="rx-row" *ngIf="appt.medicines"><span class="rx-label">Medicines</span><pre class="rx-medicines">{{ appt.medicines }}</pre></div>
+                <div class="rx-row" *ngIf="appt.consultationNotes"><span class="rx-label">Notes</span><span class="rx-value">{{ appt.consultationNotes }}</span></div>
+              </div>
+
+              <!-- Rating for completed appointments -->
+              <div *ngIf="appt.status === 'COMPLETED'" class="appt-footer">
+                <div *ngIf="appt.rating" class="rating-display">
+                  <span *ngFor="let s of getStarArray()" class="star" [class.filled]="s <= appt.rating">★</span>
+                  <span class="text-muted" style="font-size: 0.78rem; margin-left: 0.5rem">Your rating</span>
+                </div>
+                <button *ngIf="!appt.rating && feedbackApptId !== appt.id" class="btn btn-outline btn-sm" (click)="openFeedback(appt)">
+                  ⭐ Rate Visit
+                </button>
+
+                <!-- Inline feedback form -->
+                <div *ngIf="feedbackApptId === appt.id" class="feedback-form">
+                  <div class="stars-row">
+                    <span *ngFor="let s of getStarArray()" class="star-btn" [class.selected]="s <= feedbackRating" (click)="setRating(s)">★</span>
+                  </div>
+                  <input type="text" class="form-control" [(ngModel)]="feedbackComment" placeholder="Optional comment..." style="margin: 0.5rem 0" />
+                  <div style="display: flex; gap: 0.5rem">
+                    <button class="btn btn-primary btn-sm" (click)="submitFeedback()" [disabled]="feedbackRating < 1 || feedbackLoading">
+                      {{ feedbackLoading ? 'Submitting...' : 'Submit' }}
+                    </button>
+                    <button class="btn btn-outline btn-sm" (click)="closeFeedback()">Cancel</button>
+                  </div>
+                  <div *ngIf="feedbackSuccess" class="text-muted" style="font-size: 0.82rem; margin-top: 0.5rem; color: var(--success)">{{ feedbackSuccess }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Medical History -->
+      <div class="animate-fadeInUp" style="animation-delay: 0.16s" *ngIf="recentHistory.length > 0">
+        <div class="card">
+          <div class="section-header">
+            <h3 class="section-title">Recent Medical History</h3>
+            <a routerLink="/medical-history" class="view-all">View All →</a>
+          </div>
+          <div class="history-grid">
+            <div class="history-card" *ngFor="let record of recentHistory">
+              <div class="history-date">{{ record.visitDate | date:'mediumDate' }}</div>
+              <h4>{{ record.diagnosis }}</h4>
+              <p class="text-muted">Dr. {{ record.doctorName }}</p>
+              <div class="history-vitals" *ngIf="record.bloodPressure || record.temperature">
+                <span class="vital-tag" *ngIf="record.bloodPressure">BP: {{ record.bloodPressure }}</span>
+                <span class="vital-tag" *ngIf="record.temperature">{{ record.temperature }}°F</span>
+                <span class="vital-tag" *ngIf="record.pulse">{{ record.pulse }} bpm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
   </div>
 
-  <!-- Loading State -->
   <div *ngIf="loading" class="loading-state">
     <div class="spinner-large"></div>
     <p class="text-muted mt-2">Loading your dashboard...</p>

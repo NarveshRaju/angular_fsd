@@ -11,6 +11,7 @@ import { AuthService } from '../services/auth.service';
 export class MyAppointmentsComponent implements OnInit {
   appointments: AppointmentResponse[] = [];
   loading = true;
+  isDoctor = false;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -18,20 +19,34 @@ export class MyAppointmentsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isDoctor = this.authService.isDoctor();
     this.loadAppointments();
   }
 
   loadAppointments(): void {
-    const patientId = this.authService.getPatientId();
-    if (!patientId) return;
+    if (this.isDoctor) {
+      const doctorId = this.authService.getDoctorId();
+      if (!doctorId) return;
 
-    this.appointmentService.getMyAppointments(patientId).subscribe({
-      next: (res: any) => {
-        this.appointments = res.data || [];
-        this.loading = false;
-      },
-      error: () => this.loading = false
-    });
+      this.appointmentService.getDoctorAppointments(doctorId).subscribe({
+        next: (res: any) => {
+          this.appointments = res.data || [];
+          this.loading = false;
+        },
+        error: () => this.loading = false
+      });
+    } else {
+      const patientId = this.authService.getPatientId();
+      if (!patientId) return;
+
+      this.appointmentService.getMyAppointments(patientId).subscribe({
+        next: (res: any) => {
+          this.appointments = res.data || [];
+          this.loading = false;
+        },
+        error: () => this.loading = false
+      });
+    }
   }
 
   cancelAppointment(id: number): void {
@@ -40,6 +55,15 @@ export class MyAppointmentsComponent implements OnInit {
     this.appointmentService.cancelAppointment(id).subscribe({
       next: () => {
         this.appointments = this.appointments.filter(a => a.id !== id);
+      }
+    });
+  }
+
+  completeAppointment(id: number): void {
+    this.appointmentService.completeAppointment(id).subscribe({
+      next: () => {
+        const appt = this.appointments.find(a => a.id === id);
+        if (appt) appt.status = 'COMPLETED';
       }
     });
   }

@@ -1,0 +1,187 @@
+<div class="page-container">
+  <div class="page-header animate-fadeInUp">
+    <h1>🤖 AI Prescription Scanner</h1>
+    <p class="text-muted">Upload a prescription image for AI-powered analysis and ask questions about your medicines</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- Left Panel: Upload + Analysis -->
+    <div class="left-panel">
+
+      <!-- Upload Section -->
+      <div class="card upload-card animate-fadeInUp" *ngIf="!currentAnalysis">
+        <h3 class="card-title">
+          <span class="icon">📤</span> Upload Prescription
+        </h3>
+
+        <div class="form-group">
+          <label for="prescriptionId">Prescription ID</label>
+          <input type="number" id="prescriptionId" [(ngModel)]="prescriptionIdInput"
+                 placeholder="Enter prescription ID" class="form-input" />
+        </div>
+
+        <div class="drop-zone" [class.drag-over]="dragOver"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave()"
+             (drop)="onDrop($event)"
+             (click)="fileInput.click()">
+          <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" hidden />
+          <div class="drop-content" *ngIf="!selectedFile">
+            <div class="drop-icon">📷</div>
+            <p>Drag & drop your prescription image here</p>
+            <span class="text-muted">or click to browse</span>
+          </div>
+          <div class="drop-content selected" *ngIf="selectedFile">
+            <div class="drop-icon">✅</div>
+            <p>{{ selectedFile.name }}</p>
+            <span class="text-muted">{{ (selectedFile.size / 1024).toFixed(1) }} KB</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" (click)="uploadPrescription()"
+                [disabled]="!selectedFile || !prescriptionIdInput || uploading">
+          <span *ngIf="!uploading">🔍 Analyze Prescription</span>
+          <span *ngIf="uploading" class="loading-text">
+            <span class="spinner"></span> Analyzing with AI...
+          </span>
+        </button>
+
+        <div class="error-message" *ngIf="analysisError">{{ analysisError }}</div>
+      </div>
+
+      <!-- Analysis Results -->
+      <div class="card analysis-card animate-fadeInUp" *ngIf="currentAnalysis">
+        <div class="analysis-header">
+          <h3 class="card-title">
+            <span class="icon">📋</span> Analysis Results
+          </h3>
+          <button class="btn btn-outline btn-sm" (click)="clearAnalysis()">← New Scan</button>
+        </div>
+
+        <div class="status-bar" [ngClass]="{
+          'status-completed': currentAnalysis.status === 'COMPLETED',
+          'status-pending': currentAnalysis.status === 'PENDING',
+          'status-failed': currentAnalysis.status === 'FAILED'
+        }">
+          <span class="status-dot"></span>
+          {{ currentAnalysis.status }}
+        </div>
+
+        <!-- Confidence Score -->
+        <div class="confidence-section" *ngIf="currentAnalysis.confidenceScore">
+          <label>Confidence Score</label>
+          <div class="confidence-bar">
+            <div class="confidence-fill" [ngClass]="getConfidenceClass(currentAnalysis.confidenceScore)"
+                 [style.width.%]="getConfidencePercent(currentAnalysis.confidenceScore)">
+              {{ getConfidencePercent(currentAnalysis.confidenceScore) }}%
+            </div>
+          </div>
+        </div>
+
+        <!-- Extracted Text -->
+        <div class="result-section" *ngIf="currentAnalysis.extractedText">
+          <h4>📝 Extracted Text</h4>
+          <div class="result-content">{{ currentAnalysis.extractedText }}</div>
+        </div>
+
+        <!-- Analyzed Medicines -->
+        <div class="result-section" *ngIf="currentAnalysis.analyzedMedicines">
+          <h4>💊 Identified Medicines</h4>
+          <div class="result-content medicines">{{ currentAnalysis.analyzedMedicines }}</div>
+        </div>
+      </div>
+
+      <!-- Past Analyses -->
+      <div class="card history-card animate-fadeInUp" style="animation-delay: 0.1s">
+        <h3 class="card-title">
+          <span class="icon">📚</span> Past Analyses
+        </h3>
+        <div *ngIf="loadingHistory" class="loading-state">
+          <span class="spinner"></span> Loading...
+        </div>
+        <div *ngIf="!loadingHistory && pastAnalyses.length === 0" class="empty-state">
+          <p class="text-muted">No analyzed prescriptions yet</p>
+        </div>
+        <div class="past-list">
+          <div class="past-item" *ngFor="let analysis of pastAnalyses"
+               (click)="viewAnalysis(analysis)"
+               [class.active]="currentAnalysis?.imageId === analysis.imageId">
+            <div class="past-icon">🔬</div>
+            <div class="past-info">
+              <span class="past-id">Image #{{ analysis.imageId }}</span>
+              <span class="text-muted past-date">{{ analysis.analyzedAt | date:'medium' }}</span>
+            </div>
+            <span class="badge" [ngClass]="{
+              'badge-success': analysis.status === 'COMPLETED',
+              'badge-warning': analysis.status !== 'COMPLETED'
+            }">{{ analysis.status }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Chat -->
+    <div class="right-panel">
+      <div class="card chat-card animate-fadeInUp" style="animation-delay: 0.15s">
+        <h3 class="card-title">
+          <span class="icon">💬</span> Ask about your Prescription
+        </h3>
+
+        <div class="chat-container" *ngIf="currentAnalysis">
+          <div class="chat-messages" #chatContainer>
+            <div class="chat-welcome" *ngIf="chatMessages.length === 0">
+              <div class="welcome-icon">🤖</div>
+              <p>Ask me anything about your prescription!</p>
+              <div class="suggestions">
+                <button class="suggestion-chip" (click)="currentQuestion = 'What are the side effects?'; askQuestion()">
+                  Side effects?
+                </button>
+                <button class="suggestion-chip" (click)="currentQuestion = 'Any drug interactions?'; askQuestion()">
+                  Drug interactions?
+                </button>
+                <button class="suggestion-chip" (click)="currentQuestion = 'What is the dosage?'; askQuestion()">
+                  Dosage info?
+                </button>
+              </div>
+            </div>
+
+            <div *ngFor="let msg of chatMessages" class="chat-pair">
+              <div class="chat-bubble user">
+                <span class="bubble-icon">👤</span>
+                <p>{{ msg.question }}</p>
+              </div>
+              <div class="chat-bubble ai">
+                <span class="bubble-icon">🤖</span>
+                <p>{{ msg.answer }}</p>
+              </div>
+            </div>
+
+            <div *ngIf="askingQuestion" class="chat-bubble ai typing">
+              <span class="bubble-icon">🤖</span>
+              <div class="typing-dots">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <input type="text" [(ngModel)]="currentQuestion"
+                   (keyup.enter)="askQuestion()"
+                   placeholder="Ask about your medicines..."
+                   class="chat-input"
+                   [disabled]="askingQuestion" />
+            <button class="btn btn-primary btn-send" (click)="askQuestion()"
+                    [disabled]="!currentQuestion.trim() || askingQuestion">
+              ➤
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-disabled" *ngIf="!currentAnalysis">
+          <div class="disabled-icon">🔒</div>
+          <p class="text-muted">Upload or select a prescription to start chatting</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

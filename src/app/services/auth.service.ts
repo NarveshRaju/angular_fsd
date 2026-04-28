@@ -13,6 +13,8 @@ export interface LoginRequest {
 export interface AuthResponse {
   token: string;
   patientId: number;
+  role: string;
+  userId: number;
 }
 
 export interface PatientRequest {
@@ -55,7 +57,19 @@ export class AuthService {
       tap(response => {
         if (this.isBrowser) {
           localStorage.setItem('token', response.token);
-          localStorage.setItem('patientId', response.patientId.toString());
+          localStorage.setItem('role', response.role || 'PATIENT');
+          localStorage.setItem('userId', response.userId?.toString() || '');
+
+          // Keep patientId for backward compatibility
+          if (response.patientId) {
+            localStorage.setItem('patientId', response.patientId.toString());
+          } else if (response.role === 'PATIENT' && response.userId) {
+            localStorage.setItem('patientId', response.userId.toString());
+          }
+
+          if (response.role === 'DOCTOR' && response.userId) {
+            localStorage.setItem('doctorId', response.userId.toString());
+          }
         }
         this.loggedIn.next(true);
       })
@@ -70,6 +84,9 @@ export class AuthService {
     if (this.isBrowser) {
       localStorage.removeItem('token');
       localStorage.removeItem('patientId');
+      localStorage.removeItem('role');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('doctorId');
     }
     this.loggedIn.next(false);
     this.router.navigate(['/auth/login']);
@@ -83,6 +100,31 @@ export class AuthService {
   getPatientId(): number | null {
     if (!this.isBrowser) return null;
     const id = localStorage.getItem('patientId');
+    return id ? parseInt(id, 10) : null;
+  }
+
+  getUserId(): number | null {
+    if (!this.isBrowser) return null;
+    const id = localStorage.getItem('userId');
+    return id ? parseInt(id, 10) : null;
+  }
+
+  getRole(): string {
+    if (!this.isBrowser) return 'PATIENT';
+    return localStorage.getItem('role') || 'PATIENT';
+  }
+
+  isDoctor(): boolean {
+    return this.getRole() === 'DOCTOR';
+  }
+
+  isPatient(): boolean {
+    return this.getRole() === 'PATIENT';
+  }
+
+  getDoctorId(): number | null {
+    if (!this.isBrowser) return null;
+    const id = localStorage.getItem('doctorId');
     return id ? parseInt(id, 10) : null;
   }
 

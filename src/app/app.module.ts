@@ -3,7 +3,7 @@ import { BrowserModule, provideClientHydration, withEventReplay } from '@angular
 import { RouterModule, Routes } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
@@ -13,6 +13,9 @@ import { DoctorsComponent } from './doctors/doctors.component';
 import { BookAppointmentComponent } from './appointments/book-appointment.component';
 import { MyAppointmentsComponent } from './appointments/my-appointments.component';
 import { ProfileComponent } from './profile/profile.component';
+import { AiPrescriptionComponent } from './ai-prescription/ai-prescription.component';
+import { MedicineLookupComponent } from './medicine-lookup/medicine-lookup.component';
+import { MedicalHistoryComponent } from './medical-history/medical-history.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AuthGuard } from './guards/auth.guard';
@@ -48,6 +51,21 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'ai-prescription',
+    component: AiPrescriptionComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'medicine-lookup',
+    component: MedicineLookupComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'medical-history',
+    component: MedicalHistoryComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: '',
     redirectTo: 'auth/login',
     pathMatch: 'full'
@@ -65,12 +83,16 @@ const routes: Routes = [
     DoctorsComponent,
     BookAppointmentComponent,
     MyAppointmentsComponent,
-    ProfileComponent
+    ProfileComponent,
+    AiPrescriptionComponent,
+    MedicineLookupComponent,
+    MedicalHistoryComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule,
     RouterModule.forRoot(routes),
     CoreModule
   ],
